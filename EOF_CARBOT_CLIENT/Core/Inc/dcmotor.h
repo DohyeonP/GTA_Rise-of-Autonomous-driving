@@ -2,11 +2,20 @@
 #define _DCMOTOR_H_
 
 #include "main.h"
+#include <stdlib.h>
 
-void DCmotor_Forward_Rotate(void);
-void DCmotor_Backward_Rotate(void);
-void DCmotor_Break(void);
-void DCmotor_Set_DutyCycle(uint16_t duty_cycle);
-uint16_t DCmotor_Get_DutyCycle(void);
+#define JOYSTICK_MEDIAN_VALUE 90
 
-#endif
+typedef enum _DIRECTION
+{
+	FORWARD = 0,
+	BACKWARD,
+	BREAK
+} DIRECTION;
+
+void init_DCmotor(void);
+void terminate_DCmotor(void);
+void set_DCmotor(int8_t direction, int8_t left_wheel_pwm, int8_t right_wheel_pwm);
+void move(int32_t control_value[]);
+
+#endif /*_DCMOTOR_H_*/
