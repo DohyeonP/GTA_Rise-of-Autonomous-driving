@@ -225,7 +225,7 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim)
     PD12     ------> TIM4_CH1
     PD13     ------> TIM4_CH2
     */
-    GPIO_InitStruct.Pin = RIGHT_WHEEL_PWM_CH1_Pin|LEFT_WHEEL_PWM_CH2_Pin;
+    GPIO_InitStruct.Pin = LEFT_WHEEL_PWM_CH1_Pin|RIGHT_WHEEL_PWM_CH2_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

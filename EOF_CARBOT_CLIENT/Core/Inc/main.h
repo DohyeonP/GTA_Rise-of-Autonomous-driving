@@ -59,14 +59,14 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define RIGHT_WHEEL_IN1_Pin GPIO_PIN_3
-#define RIGHT_WHEEL_IN1_GPIO_Port GPIOE
-#define RIGHT_WHEEL_IN2_Pin GPIO_PIN_4
-#define RIGHT_WHEEL_IN2_GPIO_Port GPIOE
-#define LEFT_WHEEL_IN3_Pin GPIO_PIN_5
-#define LEFT_WHEEL_IN3_GPIO_Port GPIOE
-#define LEFT_WHEEL_IN4_Pin GPIO_PIN_6
-#define LEFT_WHEEL_IN4_GPIO_Port GPIOE
+#define LEFT_WHEEL_IN1_Pin GPIO_PIN_3
+#define LEFT_WHEEL_IN1_GPIO_Port GPIOE
+#define LEFT_WHEEL_IN2_Pin GPIO_PIN_4
+#define LEFT_WHEEL_IN2_GPIO_Port GPIOE
+#define RIGHT_WHEEL_IN3_Pin GPIO_PIN_5
+#define RIGHT_WHEEL_IN3_GPIO_Port GPIOE
+#define RIGHT_WHEEL_IN4_Pin GPIO_PIN_6
+#define RIGHT_WHEEL_IN4_GPIO_Port GPIOE
 #define USER_Btn_Pin GPIO_PIN_13
 #define USER_Btn_GPIO_Port GPIOC
 #define MCO_Pin GPIO_PIN_0
@@ -93,10 +93,10 @@ void Error_Handler(void);
 #define STLK_RX_GPIO_Port GPIOD
 #define STLK_TX_Pin GPIO_PIN_9
 #define STLK_TX_GPIO_Port GPIOD
-#define RIGHT_WHEEL_PWM_CH1_Pin GPIO_PIN_12
-#define RIGHT_WHEEL_PWM_CH1_GPIO_Port GPIOD
-#define LEFT_WHEEL_PWM_CH2_Pin GPIO_PIN_13
-#define LEFT_WHEEL_PWM_CH2_GPIO_Port GPIOD
+#define LEFT_WHEEL_PWM_CH1_Pin GPIO_PIN_12
+#define LEFT_WHEEL_PWM_CH1_GPIO_Port GPIOD
+#define RIGHT_WHEEL_PWM_CH2_Pin GPIO_PIN_13
+#define RIGHT_WHEEL_PWM_CH2_GPIO_Port GPIOD
 #define USB_PowerSwitchOn_Pin GPIO_PIN_6
 #define USB_PowerSwitchOn_GPIO_Port GPIOG
 #define USB_OverCurrent_Pin GPIO_PIN_7
