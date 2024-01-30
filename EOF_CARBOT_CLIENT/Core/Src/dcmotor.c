@@ -79,23 +79,36 @@ void move(int32_t control_value[])
 	joystick_1_x = control_value[0] - JOYSTICK_MEDIAN_VALUE;
 	joystick_2_y = control_value[3] - JOYSTICK_MEDIAN_VALUE;
 
-	if (joystick_1_x == 0 && joystick_2_y == 0) // 완전한 정지상태인 경우
+	if (joystick_1_x == 0 && joystick_2_y == 0) // 조이스틱 조작이 없는 IDLE 상태
 	{
 		direction = BREAK;
 
-		left_wheel_pwm = 0;
-		right_wheel_pwm = 0;
+		left_wheel_pwm = PWM_MIN;
+		right_wheel_pwm = PWM_MIN;
 	}
 	else
 	{
-		if (joystick_1_x <= 0) { direction = FORWARD; }
-		else { direction = BACKWARD; }
+		direction = (joystick_1_x <= 0) ? FORWARD : BACKWARD;
 
 		left_wheel_pwm = abs(joystick_1_x);
 		right_wheel_pwm = abs(joystick_1_x);
 
-		if (joystick_2_y < 0) { left_wheel_pwm -= abs(joystick_2_y); } // 왼쪽으로 회전하는 경우(왼쪽 바퀴 회전률 감소)
-		else if (joystick_2_y > 0) { right_wheel_pwm -= abs(joystick_2_y); } // 오른쪽으로 회전하는 경우(오른쪽 바퀴 회전률 감소)
+		if (joystick_2_y < 0) // 왼쪽으로 회전하는 경우
+		{
+			right_wheel_pwm += abs(joystick_2_y);
+			left_wheel_pwm -= abs(joystick_2_y);
+
+			right_wheel_pwm = (right_wheel_pwm > PWM_MAX) ? PWM_MAX : right_wheel_pwm;
+			left_wheel_pwm = (left_wheel_pwm < PWM_MIN) ? PWM_MIN : left_wheel_pwm;
+		}
+		else if (joystick_2_y > 0) // 오른쪽으로 회전하는 경우
+		{
+			left_wheel_pwm += abs(joystick_2_y);
+			right_wheel_pwm -= abs(joystick_2_y);
+
+			right_wheel_pwm = (right_wheel_pwm > PWM_MAX) ? PWM_MAX : right_wheel_pwm;
+			left_wheel_pwm = (left_wheel_pwm < PWM_MIN) ? PWM_MIN : left_wheel_pwm;
+		}
 		else {}
 	}
 
