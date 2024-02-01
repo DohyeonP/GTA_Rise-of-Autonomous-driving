@@ -4,21 +4,27 @@ extern TIM_HandleTypeDef htim4;
 
 
 /**
-  * @brief DC motor 작동을 위한 PWM 타이머를 start합니다.
+  * @brief DC motor 작동을 위한 PWM 타이머를 start합니다. PWM duty cycle 초기값을 0으로 셋팅합니다.
   * @retval None
   */
-void init_DCmotor(void)
+void init_RCcar(void)
 {
 	HAL_TIM_PWM_Start_IT(&htim4, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start_IT(&htim4, TIM_CHANNEL_2);
+
+	__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, 0);
+	__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_2, 0);
 }
 
 /**
-  * @brief DC motor 작동을 위한 PWM 타이머를 stop합니다.
+  * @brief DC motor 작동을 위한 PWM 타이머를 stop합니다. PWM duty cycle 값을 0으로 셋팅합니다.
   * @retval None
   */
-void terminate_DCmotor(void)
+void terminate_RCcar(void)
 {
+	__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_1, 0);
+	__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_2, 0);
+
 	HAL_TIM_PWM_Stop_IT(&htim4, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Stop_IT(&htim4, TIM_CHANNEL_2);
 }
@@ -29,7 +35,7 @@ void terminate_DCmotor(void)
   * @param 앞/뒤 설정 값, 왼쪽바퀴 PWM 값, 오른쪽바퀴 PWM 값
   * @detail
   */
-void set_DCmotor(int32_t direction, int32_t left_wheel_pwm, int32_t right_wheel_pwm)
+void set_RCcar(int32_t direction, int32_t left_wheel_pwm, int32_t right_wheel_pwm)
 {
 	if (direction == FORWARD)
 	{
@@ -67,11 +73,11 @@ void set_DCmotor(int32_t direction, int32_t left_wheel_pwm, int32_t right_wheel_
 		// control_value[1] : joystick_1의 y값
 		// control_value[2] : joystick_2의 x값
 		// control_value[3] : joystick_2의 y값
-		// x, y 값의 바운더리는 무조건 0~180 혹은 0~200 이어야함.
+		// x, y 값의 바운더리는 무조건 0~200이어야함.
 		// 중앙값에서 엣지값까지의 거리가 100을 넘어가면 안됨.
 		// x, y 값을 곧바로 PWM 듀티 사이클로 사용하고 있음.
   */
-void move(int32_t control_value[])
+void move_RCcar(int32_t control_value[])
 {
 	int32_t joystick_1_x, joystick_2_y;
 	int32_t direction, left_wheel_pwm, right_wheel_pwm;
@@ -112,5 +118,5 @@ void move(int32_t control_value[])
 		else {}
 	}
 
-	set_DCmotor(direction, left_wheel_pwm, right_wheel_pwm);
+	set_RCcar(direction, left_wheel_pwm, right_wheel_pwm);
 }

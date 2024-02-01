@@ -6,7 +6,7 @@
 
 #define PWM_MIN 0
 #define PWM_MAX 100
-#define JOYSTICK_MEDIAN_VALUE 90
+#define JOYSTICK_MEDIAN_VALUE 100
 
 typedef enum _DIRECTION
 {
@@ -15,9 +15,9 @@ typedef enum _DIRECTION
 	BREAK
 } DIRECTION;
 
-void init_DCmotor(void);
-void terminate_DCmotor(void);
-void set_DCmotor(int32_t direction, int32_t left_wheel_pwm, int32_t right_wheel_pwm);
-void move(int32_t control_value[]);
+void init_RCcar(void);
+void terminate_RCcar(void);
+void set_RCcar(int32_t direction, int32_t left_wheel_pwm, int32_t right_wheel_pwm);
+void move_RCcar(int32_t control_value[]);
 
 #endif /*_DCMOTOR_H_*/
