@@ -73,7 +73,7 @@ void set_RCcar(int32_t direction, int32_t left_wheel_pwm, int32_t right_wheel_pw
 		// control_value[1] : joystick_1의 y값
 		// control_value[2] : joystick_2의 x값
 		// control_value[3] : joystick_2의 y값
-		// x, y 값의 바운더리는 무조건 0~200이어야함.
+		// x, y 값의 바운더리는 0 ~ 1023 범위로 들어옴.
 		// 중앙값에서 엣지값까지의 거리가 100을 넘어가면 안됨.
 		// x, y 값을 곧바로 PWM 듀티 사이클로 사용하고 있음.
   */
@@ -82,8 +82,8 @@ void move_RCcar(int32_t control_value[])
 	int32_t joystick_1_x, joystick_2_y;
 	int32_t direction, left_wheel_pwm, right_wheel_pwm;
 
-	joystick_1_x = control_value[0] - JOYSTICK_MEDIAN_VALUE;
-	joystick_2_y = control_value[3] - JOYSTICK_MEDIAN_VALUE;
+	joystick_1_x = (control_value[0] - JOYSTICK_MEDIAN_VALUE) / 5;
+	joystick_2_y = (control_value[3] - JOYSTICK_MEDIAN_VALUE) / 5;
 
 	if (joystick_1_x == 0 && joystick_2_y == 0) // 조이스틱 조작이 없는 IDLE 상태
 	{
@@ -103,19 +103,16 @@ void move_RCcar(int32_t control_value[])
 		{
 			right_wheel_pwm += abs(joystick_2_y);
 			left_wheel_pwm -= abs(joystick_2_y);
-
-			right_wheel_pwm = (right_wheel_pwm > PWM_MAX) ? PWM_MAX : right_wheel_pwm;
-			left_wheel_pwm = (left_wheel_pwm < PWM_MIN) ? PWM_MIN : left_wheel_pwm;
 		}
 		else if (joystick_2_y > 0) // 오른쪽으로 회전하는 경우
 		{
 			left_wheel_pwm += abs(joystick_2_y);
 			right_wheel_pwm -= abs(joystick_2_y);
-
-			right_wheel_pwm = (right_wheel_pwm > PWM_MAX) ? PWM_MAX : right_wheel_pwm;
-			left_wheel_pwm = (left_wheel_pwm < PWM_MIN) ? PWM_MIN : left_wheel_pwm;
 		}
-		else {}
+		else {} // 직진하는 경우
+
+		left_wheel_pwm = (left_wheel_pwm < PWM_MIN) ? PWM_MIN : left_wheel_pwm;
+		right_wheel_pwm = (right_wheel_pwm > PWM_MAX) ? PWM_MAX : right_wheel_pwm;
 	}
 
 	set_RCcar(direction, left_wheel_pwm, right_wheel_pwm);
