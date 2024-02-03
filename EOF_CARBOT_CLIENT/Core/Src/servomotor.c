@@ -50,7 +50,7 @@ void terminate_RobotArm(void)
   * @brief 로봇팔의 관절 셋팅을 초기화 합니다.
   * @retval None
   */
-void init_RobotArm_position(void)
+inline void init_RobotArm_position(void)
 {
 	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, PWM_SERVO_MEDIAN);
 	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, PWM_SERVO_MEDIAN);
@@ -69,27 +69,40 @@ void init_RobotArm_position(void)
 		  - control_value[2] : joystick_2의 x값
 		  - control_value[3] : joystick_2의 y값
 
-		[ x, y 값의 바운더리는 무조건 0~200이어야함 ]
-	      - 조이스틱 값 0   : PWM 50  : 서보모터 포지션 -90 (왼쪽 회전 끝)
-          - 조이스틱 값 100 : PWM 75  : 서보모터 포지션 0
-	      - 조이스틱 값 200 : PWM 100 : 서보모터 포지션 +90 (오른쪽 회전 끝)
+		[ x, y 값의 바운더리는 0 ~ 1023 사이로 들어옴 ]
+	      - PWM 50  : 서보모터 포지션 -90 (왼쪽 회전 끝)
+          - PWM 75  : 서보모터 포지션 0
+	      - PWM 100 : 서보모터 포지션 +90 (오른쪽 회전 끝)
   */
 void move_RobotArm(int32_t control_value[])
 {
-	int32_t joint_1_pwm, joint_2_pwm, joint_3_pwm, joint_4_pwm;
+	static uint8_t joint1_pwm = PWM_SERVO_MEDIAN, plate_pwm = PWM_SERVO_MEDIAN, joint2_pwm = PWM_SERVO_MEDIAN, grip_pwm = PWM_SERVO_MEDIAN;
+	int32_t joystick_1_x, joystick_1_y, joystick_2_x, joystick_2_y;
 
-	joint_1_pwm = control_value[0] / 4 + PWM_SERVO_MEDIAN;
-	joint_2_pwm = control_value[1] / 4 + PWM_SERVO_MEDIAN;
-	joint_3_pwm = control_value[2] / 4 + PWM_SERVO_MEDIAN;
-	joint_4_pwm = control_value[3] / 4 + PWM_SERVO_MEDIAN;
+	joystick_1_x = control_value[0] - JOYSTICK_MEDIAN_VALUE;
+	joystick_1_y = control_value[1] - JOYSTICK_MEDIAN_VALUE;
+	joystick_2_x = control_value[2] - JOYSTICK_MEDIAN_VALUE;
+	joystick_2_y = control_value[3] - JOYSTICK_MEDIAN_VALUE;
 
-	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, joint_1_pwm);
-	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, joint_2_pwm);
-	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, joint_3_pwm);
-	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, joint_4_pwm);
+	joint1_pwm += (joystick_1_x < 0) ? -2 : 2;
+	plate_pwm += (joystick_1_y < 0) ? 2 : -2;
+	joint2_pwm += (joystick_2_x < 0) ? -2 : 2;
+	grip_pwm += (joystick_2_y < 0) ? -2 : 2;
+
+	joint1_pwm = (joint1_pwm > PWM_SERVO_MAX) ? PWM_SERVO_MAX : joint1_pwm;
+	joint1_pwm = (joint1_pwm < PWM_SERVO_MIN) ? PWM_SERVO_MIN : joint1_pwm;
+	plate_pwm = (plate_pwm > PWM_SERVO_MAX) ? PWM_SERVO_MAX : plate_pwm;
+	plate_pwm = (plate_pwm < PWM_SERVO_MIN) ? PWM_SERVO_MIN : plate_pwm;
+	joint2_pwm = (joint2_pwm > PWM_SERVO_MAX) ? PWM_SERVO_MAX : joint2_pwm;
+	joint2_pwm = (joint2_pwm < PWM_SERVO_MIN) ? PWM_SERVO_MIN : joint2_pwm;
+	grip_pwm = (grip_pwm > PWM_SERVO_MAX) ? PWM_SERVO_MAX : grip_pwm;
+	grip_pwm = (grip_pwm < PWM_SERVO_MIN) ? PWM_SERVO_MIN : grip_pwm;
+
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, joint1_pwm);
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, plate_pwm);
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, joint2_pwm);
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, grip_pwm);
+
+	delay_ms(50);
 }
-
-
-
-
 

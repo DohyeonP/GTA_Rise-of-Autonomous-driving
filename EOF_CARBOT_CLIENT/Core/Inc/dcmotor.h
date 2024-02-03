@@ -6,7 +6,7 @@
 
 #define PWM_MIN 0
 #define PWM_MAX 100
-#define JOYSTICK_MEDIAN_VALUE 100
+#define JOYSTICK_MEDIAN_VALUE 512
 
 typedef enum _DIRECTION
 {
