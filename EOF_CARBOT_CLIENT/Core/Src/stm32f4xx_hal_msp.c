@@ -268,14 +268,14 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim)
     GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
     HAL_GPIO_Init(ROBOT_ARM_JOINT1_PWM_CH1_GPIO_Port, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = ROBOT_ARM_JOINT4_PWM_CH4_Pin;
+    GPIO_InitStruct.Pin = ROBOT_ARM_GRIP_PWM_CH4_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
-    HAL_GPIO_Init(ROBOT_ARM_JOINT4_PWM_CH4_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_Init(ROBOT_ARM_GRIP_PWM_CH4_GPIO_Port, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = ROBOT_ARM_JOINT2_PWM_CH2_Pin|ROBOT_ARM_JOINT3_PWM_CH3_Pin;
+    GPIO_InitStruct.Pin = ROBOT_ARM_PLATE_PWM_CH2_Pin|ROBOT_ARM_JOINT2_PWM_CH3_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
