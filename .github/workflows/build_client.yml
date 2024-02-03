@@ -1,0 +1,21 @@
+name: build_client
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # 선택한 환경에 따라 수정해주세요
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Build STM32CubeIde project
+      uses: xanderhendriks/action-build-stm32cubeide@v9.0
+      with:
+        project-path: EOF_FinalProject/EOF_CARBOT_CLIENT
+        project-target: EOF_CARBOT_CLIENT
