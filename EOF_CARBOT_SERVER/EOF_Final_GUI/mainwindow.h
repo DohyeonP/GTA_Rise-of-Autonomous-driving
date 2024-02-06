@@ -6,7 +6,9 @@
 #include <QDebug> // ADD for Debug
 #include <QTextStream> // ADD for message handling
 #include <QString> // ADD for String
-#include <QQueue> // ADD for Queue
+
+#include <QImage> // ADD for Image
+#include <QPixmap>
 
 namespace Ui {
 class MainWindow;
@@ -48,10 +50,6 @@ private:
     QUdpSocket *joyStick1_socket;
     QUdpSocket *joyStick2_socket;
     QUdpSocket *joyStick3_socket;
-
-    QQueue<QString> video_queue; // QImage 로 바꿀 것! 나중에
-
-    QQueue<QString> joyStick_queue;
 
     Ui::MainWindow *ui;
 };

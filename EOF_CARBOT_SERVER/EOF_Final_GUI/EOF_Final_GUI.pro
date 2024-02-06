@@ -9,7 +9,7 @@ QT       += network # ADD for Communication
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = EOF_Final_Server
+TARGET = EOF_Final_GUI
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use

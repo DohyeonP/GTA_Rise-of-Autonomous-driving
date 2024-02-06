@@ -110,16 +110,20 @@ void  MainWindow::video1_receive()
     QHostAddress sender; // 송신자의 IP
     quint16 senderPort; // 송신자의 SW PORT
 
+    QImage *img = new QImage();
+    QPixmap *px_buf = new QPixmap();
+
     Buffer.resize(video1_socket->pendingDatagramSize());
     video1_socket->readDatagram(Buffer.data(), Buffer.size(), &sender, &senderPort);
 
-    QString prefix = "V1";
-    Buffer.prepend(prefix.toUtf8());
-
-    video_queue.enqueue(Buffer);
-
-    ui->textEdit1->append(Buffer);
-    ui->textEdit1->show();
+    if(img->loadFromData(Buffer))
+    {
+        *px_buf = QPixmap::fromImage(*img);
+        *px_buf = px_buf->scaled(img->width(), img->height());
+        ui->labelCam1->setPixmap(*px_buf);
+        ui->labelCam1->resize(px_buf->width(), px_buf->height());
+        ui->labelCam1->show();
+    }
 }
 
 void MainWindow::video2_receive()
@@ -128,16 +132,20 @@ void MainWindow::video2_receive()
     QHostAddress sender; // 송신자의 IP
     quint16 senderPort; // 송신자의 SW PORT
 
+    QImage *img = new QImage();
+    QPixmap *px_buf = new QPixmap();
+
     Buffer.resize(video2_socket->pendingDatagramSize());
     video2_socket->readDatagram(Buffer.data(), Buffer.size(), &sender, &senderPort);
 
-    QString prefix = "V2";
-    Buffer.prepend(prefix.toUtf8());
-
-    video_queue.enqueue(Buffer);
-
-    ui->textEdit2->append(Buffer);
-    ui->textEdit2->show();
+    if(img->loadFromData(Buffer))
+    {
+        *px_buf = QPixmap::fromImage(*img);
+        *px_buf = px_buf->scaled(img->width(), img->height());
+        ui->labelCam2->setPixmap(*px_buf);
+        ui->labelCam2->resize(px_buf->width(), px_buf->height());
+        ui->labelCam2->show();
+    }
 }
 
 void MainWindow::video3_receive()
@@ -146,16 +154,20 @@ void MainWindow::video3_receive()
     QHostAddress sender; // 송신자의 IP
     quint16 senderPort; // 송신자의 SW PORT
 
+    QImage *img = new QImage();
+    QPixmap *px_buf = new QPixmap();
+
     Buffer.resize(video3_socket->pendingDatagramSize());
     video3_socket->readDatagram(Buffer.data(), Buffer.size(), &sender, &senderPort);
 
-    QString prefix = "V3";
-    Buffer.prepend(prefix.toUtf8());
-
-    video_queue.enqueue(Buffer);
-
-    ui->textEdit3->append(Buffer);
-    ui->textEdit3->show();
+    if(img->loadFromData(Buffer))
+    {
+        *px_buf = QPixmap::fromImage(*img);
+        *px_buf = px_buf->scaled(img->width(), img->height());
+        ui->labelCam3->setPixmap(*px_buf);
+        ui->labelCam3->resize(px_buf->width(), px_buf->height());
+        ui->labelCam3->show();
+    }
 }
 
 void MainWindow::control1_send(QByteArray data)

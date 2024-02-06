@@ -6,96 +6,92 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>901</width>
-    <height>643</height>
+    <width>1082</width>
+    <height>566</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <property name="autoFillBackground">
-    <bool>false</bool>
-   </property>
-   <widget class="QPushButton" name="pushButtonControl1">
+   <widget class="QPushButton" name="pushButtonCam1">
     <property name="geometry">
      <rect>
-      <x>200</x>
+      <x>240</x>
       <y>260</y>
       <width>89</width>
       <height>25</height>
      </rect>
     </property>
     <property name="text">
-     <string>Control1</string>
+     <string>Cam1</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit1">
+   <widget class="QPushButton" name="pushButtonCam2">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>260</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Cam2</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonCam3">
+    <property name="geometry">
+     <rect>
+      <x>920</x>
+      <y>260</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Cam3</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelCam1">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>281</width>
+      <width>321</width>
       <height>241</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="textEdit2">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>10</y>
-      <width>281</width>
-      <height>241</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButtonControl2">
-    <property name="geometry">
-     <rect>
-      <x>500</x>
-      <y>260</y>
-      <width>89</width>
-      <height>25</height>
      </rect>
     </property>
     <property name="text">
-     <string>Control2</string>
+     <string/>
     </property>
    </widget>
-   <widget class="QTextEdit" name="textEdit3">
+   <widget class="QLabel" name="labelCam2">
     <property name="geometry">
      <rect>
-      <x>610</x>
+      <x>350</x>
       <y>10</y>
-      <width>281</width>
+      <width>321</width>
       <height>241</height>
      </rect>
     </property>
+    <property name="text">
+     <string/>
+    </property>
    </widget>
-   <widget class="QPushButton" name="pushButtonControl3">
+   <widget class="QLabel" name="labelCam3">
     <property name="geometry">
      <rect>
-      <x>800</x>
-      <y>260</y>
-      <width>89</width>
-      <height>25</height>
+      <x>690</x>
+      <y>10</y>
+      <width>321</width>
+      <height>241</height>
      </rect>
     </property>
     <property name="text">
-     <string>Control3</string>
+     <string/>
     </property>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>901</width>
-     <height>22</height>
-    </rect>
-   </property>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -106,6 +102,21 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1082</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <action name="actiona">
+   <property name="text">
+    <string>a</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
