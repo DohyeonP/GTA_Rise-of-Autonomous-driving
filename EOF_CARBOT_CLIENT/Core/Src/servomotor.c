@@ -15,7 +15,7 @@
 
 #include "servomotor.h"
 
-extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim2;
 
 
 /**
@@ -24,10 +24,10 @@ extern TIM_HandleTypeDef htim3;
   */
 void init_RobotArm(void)
 {
-	HAL_TIM_PWM_Start_IT(&htim3, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start_IT(&htim3, TIM_CHANNEL_2);
-	HAL_TIM_PWM_Start_IT(&htim3, TIM_CHANNEL_3);
-	HAL_TIM_PWM_Start_IT(&htim3, TIM_CHANNEL_4);
+	HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_4);
 
 	init_RobotArm_position();
 }
@@ -40,22 +40,22 @@ void terminate_RobotArm(void)
 {
 	init_RobotArm_position();
 
-	HAL_TIM_PWM_Stop_IT(&htim3, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Stop_IT(&htim3, TIM_CHANNEL_2);
-	HAL_TIM_PWM_Stop_IT(&htim3, TIM_CHANNEL_3);
-	HAL_TIM_PWM_Stop_IT(&htim3, TIM_CHANNEL_4);
+	HAL_TIM_PWM_Stop_IT(&htim2, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Stop_IT(&htim2, TIM_CHANNEL_2);
+	HAL_TIM_PWM_Stop_IT(&htim2, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Stop_IT(&htim2, TIM_CHANNEL_4);
 }
 
 /**
   * @brief 로봇팔의 관절 셋팅을 초기화 합니다.
   * @retval None
   */
-inline void init_RobotArm_position(void)
+void init_RobotArm_position(void)
 {
-	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, PWM_SERVO_MEDIAN);
-	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, PWM_SERVO_MEDIAN);
-	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, PWM_SERVO_MEDIAN);
-	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, PWM_SERVO_MEDIAN);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, PWM_SERVO_MEDIAN);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, PWM_SERVO_MEDIAN);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, PWM_SERVO_MEDIAN);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, PWM_SERVO_MEDIAN);
 }
 
 /**
@@ -98,11 +98,10 @@ void move_RobotArm(int32_t control_value[])
 	grip_pwm = (grip_pwm > PWM_SERVO_MAX) ? PWM_SERVO_MAX : grip_pwm;
 	grip_pwm = (grip_pwm < PWM_SERVO_MIN) ? PWM_SERVO_MIN : grip_pwm;
 
-	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, joint1_pwm);
-	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, plate_pwm);
-	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, joint2_pwm);
-	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, grip_pwm);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, joint1_pwm);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, plate_pwm);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, joint2_pwm);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, grip_pwm);
 
 	delay_ms(50);
 }
-
