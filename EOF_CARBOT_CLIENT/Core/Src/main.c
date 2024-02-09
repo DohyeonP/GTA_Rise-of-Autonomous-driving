@@ -67,6 +67,20 @@ const osThreadAttr_t defaultTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for RC_car */
+osThreadId_t RC_carHandle;
+const osThreadAttr_t RC_car_attributes = {
+  .name = "RC_car",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for Robot_Arm */
+osThreadId_t Robot_ArmHandle;
+const osThreadAttr_t Robot_Arm_attributes = {
+  .name = "Robot_Arm",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -81,6 +95,8 @@ static void MX_TIM4_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_TIM2_Init(void);
 void StartDefaultTask(void *argument);
+void control_RC_car_func(void *argument);
+void control_robot_arm_func(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -176,6 +192,12 @@ int main(void)
   /* Create the thread(s) */
   /* creation of defaultTask */
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+
+  /* creation of RC_car */
+  RC_carHandle = osThreadNew(control_RC_car_func, NULL, &RC_car_attributes);
+
+  /* creation of Robot_Arm */
+  Robot_ArmHandle = osThreadNew(control_robot_arm_func, NULL, &Robot_Arm_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -604,47 +626,134 @@ static void MX_GPIO_Init(void)
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
-
-
-
-	printf("start!!!");
-
-	HAL_TIM_Base_Start_IT(&htim6);
-//	  int32_t cv[4];
-//	  cv[0] = 512;
-//	  cv[1] = 512;
-//	  cv[2] = 512;
-//	  cv[3] = 512;
-//
-//	  init_RCcar();
-//	  move_RCcar(cv);
-
-	HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_2);
-	HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_3);
-	HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_4);
-	delay_ms(50);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 50);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 100);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 100);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, 100);
-	delay_ms(50);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 100);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 50);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 50);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, 75);
-	delay_ms(50);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 75);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 75);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 75);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, 75);
-
   /* Infinite loop */
   for(;;)
   {
     osDelay(1);
   }
   /* USER CODE END 5 */
+}
+
+/* USER CODE BEGIN Header_control_RC_car_func */
+/**
+* @brief Function implementing the RC_car thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_control_RC_car_func */
+void control_RC_car_func(void *argument)
+{
+  /* USER CODE BEGIN control_RC_car_func */
+	int32_t cv[4];
+
+	init_RCcar();
+  /* Infinite loop */
+  for(;;)
+  {
+#if 0 // control multiple HW test code
+	cv[0] = 512;
+	cv[1] = 512;
+	cv[2] = 512;
+	cv[3] = 512;
+	move_RCcar(cv);
+	osDelay(1);
+	cv[0] = 300;
+	cv[1] = 512;
+	cv[2] = 512;
+	cv[3] = 512;
+	move_RCcar(cv);
+	osDelay(1);
+	cv[0] = 800;
+	cv[1] = 512;
+	cv[2] = 512;
+	cv[3] = 512;
+	move_RCcar(cv);
+#endif
+    osDelay(1);
+  }
+  /* USER CODE END control_RC_car_func */
+}
+
+/* USER CODE BEGIN Header_control_robot_arm_func */
+/**
+* @brief Function implementing the Robot_Arm thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_control_robot_arm_func */
+void control_robot_arm_func(void *argument)
+{
+  /* USER CODE BEGIN control_robot_arm_func */
+
+  /* Infinite loop */
+  for(;;)
+  {
+#if 0 // control multiple HW test code
+	HAL_TIM_Base_Start_IT(&htim6);
+
+	HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_4);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	osDelay(1);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 50);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 100);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 100);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, 100);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	osDelay(1);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 100);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 50);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 50);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, 75);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	osDelay(1);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 75);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 75);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 75);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, 75);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+	delay_ms(50);
+#endif
+	osDelay(1);
+  }
+  /* USER CODE END control_robot_arm_func */
 }
 
 /**
