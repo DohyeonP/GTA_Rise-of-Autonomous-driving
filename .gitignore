@@ -1,2 +1,7 @@
+# CubeIDE 관련 설정 파일 제외
+EOF_CARBOT_CLIENT/.settings/*
+EOF_CARBOT_CLIENT/.metadata/*
+
+# CubeIDE 관련 debug 파일 제외
 EOF_CARBOT_CLIENT/Debug/*
 EOF_CARBOT_CLIENT/*.launch
