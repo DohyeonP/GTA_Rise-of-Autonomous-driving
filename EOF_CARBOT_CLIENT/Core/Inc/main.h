@@ -73,12 +73,14 @@ void Error_Handler(void);
 #define MCO_GPIO_Port GPIOH
 #define RMII_MDC_Pin GPIO_PIN_1
 #define RMII_MDC_GPIO_Port GPIOC
+#define RA_PLATE_PWM_CH1_Pin GPIO_PIN_0
+#define RA_PLATE_PWM_CH1_GPIO_Port GPIOA
 #define RMII_REF_CLK_Pin GPIO_PIN_1
 #define RMII_REF_CLK_GPIO_Port GPIOA
 #define RMII_MDIO_Pin GPIO_PIN_2
 #define RMII_MDIO_GPIO_Port GPIOA
-#define ROBOT_ARM_JOINT1_PWM_CH1_Pin GPIO_PIN_6
-#define ROBOT_ARM_JOINT1_PWM_CH1_GPIO_Port GPIOA
+#define RA_GRIP_PWM_CH4_Pin GPIO_PIN_3
+#define RA_GRIP_PWM_CH4_GPIO_Port GPIOA
 #define RMII_CRS_DV_Pin GPIO_PIN_7
 #define RMII_CRS_DV_GPIO_Port GPIOA
 #define RMII_RXD0_Pin GPIO_PIN_4
@@ -87,8 +89,8 @@ void Error_Handler(void);
 #define RMII_RXD1_GPIO_Port GPIOC
 #define LD1_Pin GPIO_PIN_0
 #define LD1_GPIO_Port GPIOB
-#define ROBOT_ARM_GRIP_PWM_CH4_Pin GPIO_PIN_1
-#define ROBOT_ARM_GRIP_PWM_CH4_GPIO_Port GPIOB
+#define RA_JOINT2_PWM_CH3_Pin GPIO_PIN_10
+#define RA_JOINT2_PWM_CH3_GPIO_Port GPIOB
 #define RMII_TXD1_Pin GPIO_PIN_13
 #define RMII_TXD1_GPIO_Port GPIOB
 #define LD3_Pin GPIO_PIN_14
@@ -105,10 +107,6 @@ void Error_Handler(void);
 #define USB_PowerSwitchOn_GPIO_Port GPIOG
 #define USB_OverCurrent_Pin GPIO_PIN_7
 #define USB_OverCurrent_GPIO_Port GPIOG
-#define ROBOT_ARM_PLATE_PWM_CH2_Pin GPIO_PIN_7
-#define ROBOT_ARM_PLATE_PWM_CH2_GPIO_Port GPIOC
-#define ROBOT_ARM_JOINT2_PWM_CH3_Pin GPIO_PIN_8
-#define ROBOT_ARM_JOINT2_PWM_CH3_GPIO_Port GPIOC
 #define USB_SOF_Pin GPIO_PIN_8
 #define USB_SOF_GPIO_Port GPIOA
 #define USB_VBUS_Pin GPIO_PIN_9
@@ -127,6 +125,8 @@ void Error_Handler(void);
 #define RMII_TX_EN_GPIO_Port GPIOG
 #define RMII_TXD0_Pin GPIO_PIN_13
 #define RMII_TXD0_GPIO_Port GPIOG
+#define RA_JOINT1_PWM_CH2_Pin GPIO_PIN_3
+#define RA_JOINT1_PWM_CH2_GPIO_Port GPIOB
 #define LD2_Pin GPIO_PIN_7
 #define LD2_GPIO_Port GPIOB
 
