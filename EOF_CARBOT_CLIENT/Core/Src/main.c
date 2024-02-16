@@ -32,10 +32,19 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
+// @add kenGwon 2/16
+typedef struct
+{
+	char control_value[20];
+} QueueItem;
+
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+// @add kenGwon 2/16
+#define QUEUE_MAX_TIMEOUT 10
 
 /* USER CODE END PD */
 
@@ -68,19 +77,31 @@ const osThreadAttr_t defaultTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for RC_car */
-osThreadId_t RC_carHandle;
-const osThreadAttr_t RC_car_attributes = {
-  .name = "RC_car",
+/* Definitions for ctrl_RC_Car */
+osThreadId_t ctrl_RC_CarHandle;
+const osThreadAttr_t ctrl_RC_Car_attributes = {
+  .name = "ctrl_RC_Car",
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityLow,
 };
-/* Definitions for Robot_Arm */
-osThreadId_t Robot_ArmHandle;
-const osThreadAttr_t Robot_Arm_attributes = {
-  .name = "Robot_Arm",
+/* Definitions for ctrl_Robot_Arm */
+osThreadId_t ctrl_Robot_ArmHandle;
+const osThreadAttr_t ctrl_Robot_Arm_attributes = {
+  .name = "ctrl_Robot_Arm",
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for listen_cv */
+osThreadId_t listen_cvHandle;
+const osThreadAttr_t listen_cv_attributes = {
+  .name = "listen_cv",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for Control_value_queue */
+osMessageQueueId_t Control_value_queueHandle;
+const osMessageQueueAttr_t Control_value_queue_attributes = {
+  .name = "Control_value_queue"
 };
 /* USER CODE BEGIN PV */
 
@@ -97,8 +118,9 @@ static void MX_TIM2_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_USART3_UART_Init(void);
 void StartDefaultTask(void *argument);
-void control_RC_car_func(void *argument);
-void control_robot_arm_func(void *argument);
+void control_RC_car(void *argument);
+void control_robot_arm(void *argument);
+void listen_control_value(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -169,20 +191,8 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
-#if 0 // test for nodeMCU
-  while(1)
-  {
-	  uint8_t receivedData[100] = "";
-
-	  HAL_UART_Receive(&huart2, (uint8_t*)receivedData, sizeof(receivedData) - 1, 100);
-//	  receivedData[sizeof(receivedData)-1] = '\0';
-
-	  printf("test\n");
-	  printf("receivedData: %s\n", receivedData);
-
-	  HAL_Delay(10);
-  }
-#endif
+  printf("start EOR_CARBOT_CLIENT !!\n");
+  HAL_TIM_Base_Start_IT(&htim6); // timer for delay_ms()
 
   /* USER CODE END 2 */
 
@@ -201,6 +211,10 @@ int main(void)
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
 
+  /* Create the queue(s) */
+  /* creation of Control_value_queue */
+  Control_value_queueHandle = osMessageQueueNew (16, sizeof(QueueItem), &Control_value_queue_attributes);
+
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
@@ -209,11 +223,14 @@ int main(void)
   /* creation of defaultTask */
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
-  /* creation of RC_car */
-  RC_carHandle = osThreadNew(control_RC_car_func, NULL, &RC_car_attributes);
+  /* creation of ctrl_RC_Car */
+  ctrl_RC_CarHandle = osThreadNew(control_RC_car, NULL, &ctrl_RC_Car_attributes);
 
-  /* creation of Robot_Arm */
-  Robot_ArmHandle = osThreadNew(control_robot_arm_func, NULL, &Robot_Arm_attributes);
+  /* creation of ctrl_Robot_Arm */
+  ctrl_Robot_ArmHandle = osThreadNew(control_robot_arm, NULL, &ctrl_Robot_Arm_attributes);
+
+  /* creation of listen_cv */
+  listen_cvHandle = osThreadNew(listen_control_value, NULL, &listen_cv_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -675,134 +692,108 @@ static void MX_GPIO_Init(void)
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
+
+  //////////////////// @add kenGwon @2/16 ////////////////////
+  if (osThreadTerminate(ctrl_RC_CarHandle))
+	  perror("ctrl RC car Terminate");
+  if (osThreadTerminate(ctrl_Robot_ArmHandle))
+	  perror("ctrl Robot arm Terminate");
+  if (osThreadTerminate(listen_cvHandle))
+	  perror("listen cv Terminate");
+
   /* Infinite loop */
   for(;;)
   {
+
+    ctrl_RC_CarHandle = osThreadNew(control_RC_car, NULL, &ctrl_RC_Car_attributes);
+    ctrl_Robot_ArmHandle = osThreadNew(control_robot_arm, NULL, &ctrl_Robot_Arm_attributes);
+    listen_cvHandle = osThreadNew(listen_control_value, NULL, &listen_cv_attributes);
+
     osDelay(1);
   }
   /* USER CODE END 5 */
 }
 
-/* USER CODE BEGIN Header_control_RC_car_func */
+/* USER CODE BEGIN Header_control_RC_car */
 /**
 * @brief Function implementing the RC_car thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_control_RC_car_func */
-void control_RC_car_func(void *argument)
+/* USER CODE END Header_control_RC_car */
+void control_RC_car(void *argument)
 {
-  /* USER CODE BEGIN control_RC_car_func */
-	int32_t cv[4];
-
-	init_RCcar();
+  /* USER CODE BEGIN control_RC_car */
+  char cv_str[20];
+  int32_t cv_int[4];
+  init_RCcar();
   /* Infinite loop */
   for(;;)
   {
-#if 0 // control multiple HW test code
-	cv[0] = 512;
-	cv[1] = 512;
-	cv[2] = 512;
-	cv[3] = 512;
-	move_RCcar(cv);
-	osDelay(1);
-	cv[0] = 300;
-	cv[1] = 512;
-	cv[2] = 512;
-	cv[3] = 512;
-	move_RCcar(cv);
-	osDelay(1);
-	cv[0] = 800;
-	cv[1] = 512;
-	cv[2] = 512;
-	cv[3] = 512;
-	move_RCcar(cv);
-#endif
+	osMessageQueueGet(Control_value_queueHandle, cv_str, NULL, QUEUE_MAX_TIMEOUT);
+//	decode_contol_value(cv_str, cv_int);
+	move_RCcar(cv_int);
     osDelay(1);
   }
-  /* USER CODE END control_RC_car_func */
+  /* USER CODE END control_RC_car */
 }
 
-/* USER CODE BEGIN Header_control_robot_arm_func */
+/* USER CODE BEGIN Header_control_robot_arm */
 /**
-* @brief Function implementing the Robot_Arm thread.
+* @brief Function implementing the Robot_arm thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_control_robot_arm_func */
-void control_robot_arm_func(void *argument)
+/* USER CODE END Header_control_robot_arm */
+void control_robot_arm(void *argument)
 {
-  /* USER CODE BEGIN control_robot_arm_func */
-
+  /* USER CODE BEGIN control_robot_arm */
+  char cv_str[20];
+  int32_t cv_int[4];
+  init_RobotArm();
   /* Infinite loop */
   for(;;)
   {
-#if 0 // control multiple HW test code
-	HAL_TIM_Base_Start_IT(&htim6);
-
-	HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_2);
-	HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_3);
-	HAL_TIM_PWM_Start_IT(&htim2, TIM_CHANNEL_4);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	osDelay(1);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 50);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 100);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 100);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, 100);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	osDelay(1);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 100);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 50);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 50);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, 75);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	osDelay(1);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 75);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_2, 75);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 75);
-	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_4, 75);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-	delay_ms(50);
-#endif
+	osMessageQueueGet(Control_value_queueHandle, cv_str, NULL, QUEUE_MAX_TIMEOUT);
+//	decode_contol_value(cv_str, cv_int);
+	move_RobotArm(cv_int);
 	osDelay(1);
   }
-  /* USER CODE END control_robot_arm_func */
+  /* USER CODE END control_robot_arm */
+}
+
+/* USER CODE BEGIN Header_listen_control_value */
+/**
+* @brief Function implementing the listen_cv thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_listen_control_value */
+void listen_control_value(void *argument)
+{
+  /* USER CODE BEGIN listen_control_value */
+  /* Infinite loop */
+  for(;;)
+  {
+
+#if 0 // test for nodeMCU
+  while(1)
+  {
+	  uint8_t receivedData[100] = "";
+
+	  HAL_UART_Receive(&huart2, (uint8_t*)receivedData, sizeof(receivedData) - 1, 100);
+//	  receivedData[sizeof(receivedData)-1] = '\0';
+
+	  printf("test\n");
+	  printf("receivedData: %s\n", receivedData);
+
+	  HAL_Delay(10);
+  }
+#endif
+
+    osDelay(1);
+  }
+  /* USER CODE END listen_control_value */
 }
 
 /**
